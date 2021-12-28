@@ -63,6 +63,11 @@ android {
 			pickFirsts += ['EventFact*.properties']
 		}
 	}
+
+	// TODO remove this disable
+	lintOptions {
+		disable 'MissingConstraints','MissingTranslation'
+	}
 	namespace 'app.familygem'
 }
 

@@ -200,7 +200,8 @@ public class CartelleMedia extends BaseActivity {
 
 	@Override
 	public void onRequestPermissionsResult( int codice, String[] permessi, int[] accordi ) {
-		if( accordi.length > 0 && accordi[0] == PackageManager.PERMISSION_GRANTED && codice == 3517 )
+		super.onRequestPermissionsResult(codice, permessi, accordi);
+		if (accordi.length > 0 && accordi[0] == PackageManager.PERMISSION_GRANTED && codice == 3517)
 			faiScegliereCartella();
 	}
 }
