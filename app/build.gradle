@@ -99,6 +99,21 @@ android {
 		disable 'MissingConstraints','MissingTranslation'
 	}
 	namespace 'app.familygem'
+
+	applicationVariants.all { variant ->
+		variant.outputs.all { output ->
+			if (variant.name == "release") {
+				def builtType = variant.buildType.name
+				def vName = variant.versionName
+				def vCode = variant.versionCode
+				// def flavor = variant.flavorName
+				def newName = "FamiliyGem"
+				newName += "-${vName}-${vCode}-${builtType}.apk"
+				outputFileName = newName
+			}
+			println "$variant.name: name is $outputFileName"
+		}
+	}
 }
 
 dependencies {
