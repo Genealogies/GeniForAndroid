@@ -119,7 +119,7 @@ dependencies {
 	implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 	implementation 'com.otaliastudios:zoomlayout:1.3.0'
 	implementation 'com.github.AndroidDeveloperLB:FastScrollerAndRecyclerViewFixes:5'
-	implementation 'org.jsoup:jsoup:1.14.1'
+	implementation 'org.jsoup:jsoup:1.15.3'
 	implementation files('libs/geonames-1.1.14.jar')
 	implementation 'com.squareup.picasso:picasso:2.71828'
 	implementation 'org.jdom:jdom:1.1.3' // Don't update to version 2.x for compatibility with GeoNames
