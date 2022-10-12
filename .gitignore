@@ -1,8 +1,5 @@
-/.gradle/
-/.idea/
-/build/
-/app/build/
+.gradle
+.idea
+build
 /app/libs-source-data/
-/lab/build/
-chiavi.properties
 local.properties
