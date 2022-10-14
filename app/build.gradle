@@ -95,10 +95,10 @@ android {
 	}
 
 	// TODO remove this disable
-	lintOptions {
-		disable 'MissingConstraints','MissingTranslation'
-	}
 	namespace 'app.familygem'
+	lint {
+		disable 'MissingConstraints', 'MissingTranslation'
+	}
 
 	applicationVariants.all { variant ->
 		variant.outputs.all { output ->
