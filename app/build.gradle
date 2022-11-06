@@ -137,9 +137,8 @@ dependencies {
 	implementation 'com.otaliastudios:zoomlayout:1.9.0'
 	implementation 'com.github.AndroidDeveloperLB:FastScrollerAndRecyclerViewFixes:9'
 	implementation 'org.jsoup:jsoup:1.15.3'
-	implementation files('libs/geonames-1.1.14.jar')
+	implementation project(':geonames')
 	implementation 'com.squareup.picasso:picasso:2.71828'
-	implementation 'org.jdom:jdom:2.0.2' // Don't update to version 2.x for compatibility with GeoNames
 	implementation 'androidx.core:core-ktx:+'
 	//androidTestImplementation 'androidx.test:runner:1.4.0'
 }

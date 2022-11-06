@@ -14,6 +14,7 @@ import org.geonames.Toponym;
 import org.geonames.ToponymSearchCriteria;
 import org.geonames.ToponymSearchResult;
 import org.geonames.WebService;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
