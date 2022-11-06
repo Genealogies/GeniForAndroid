@@ -17,6 +17,7 @@ jobs:
         uses: actions/checkout@v3.1.0
         with:
           fetch-depth: 0
+          submodules: 'recursive'
       - name: Find Tag
         id: tagger
         uses: jimschubert/query-tag-action@v2
@@ -29,8 +30,11 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: ${{ matrix.java_version }}
+      - name: Build Gedcom
+        run:
+          cd gedcom5-java && mvn install
       - name: Install Android SDK
-        uses: malinskiy/action-android/install-sdk@release/0.1.2
+        uses: malinskiy/action-android/install-sdk@release/0.1.4
       - name: Decrypt keystore
         run: ./signing/decrypt.sh
         env:
