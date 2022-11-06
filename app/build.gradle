@@ -123,9 +123,8 @@ dependencies {
 	implementation 'com.google.code.gson:gson:2.10'
 	implementation 'commons-net:commons-net:3.8.0'
 	implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
-	//implementation 'org.familysearch.gedcom:gedcom:1.13.0'
-	implementation files('libs/gedcom-1.14.0-SNAPSHOT.jar')
-	implementation files('libs/slf4j-api-1.7.25.jar')
+	// please run cd gedcom5-java && mvn install
+	implementation 'org.familysearch.gedcom:gedcom:1.14.0-SNAPSHOT'
 	implementation 'androidx.work:work-runtime:2.7.1'
 	implementation 'androidx.appcompat:appcompat:1.7.0-alpha01'
 	implementation 'com.android.installreferrer:installreferrer:2.2'
