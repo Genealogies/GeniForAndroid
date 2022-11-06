@@ -1,3 +1,6 @@
 [submodule "gedcom5-java"]
 	path = gedcom5-java
 	url = git@github.com:FamilySearch/gedcom5-java.git
+[submodule "GedcomGraph"]
+	path = GedcomGraph
+	url = git@github.com:michelesalvador/GedcomGraph.git
