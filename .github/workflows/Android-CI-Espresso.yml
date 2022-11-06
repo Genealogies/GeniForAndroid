@@ -38,7 +38,7 @@ jobs:
 #          tag: ${{ matrix.tag }}
 #          abi: ${{ matrix.abi }}
 #          cmdOptions: -noaudio -no-boot-anim -no-window
-#      - uses: actions/upload-artifact@v3.1.0
+#      - uses: actions/upload-artifact@v3.1.1
 #        if: ${{ always() }}
 #        with:
 #          name: GEM-Espresso-${{ matrix.api }}-${{ matrix.abi }}-report
@@ -54,7 +54,7 @@ jobs:
       - name: Code checks
         run: ./gradlew check
       - name: Archive Lint report
-        uses: actions/upload-artifact@v3.1.0
+        uses: actions/upload-artifact@v3.1.1
         if: ${{ always() }}
         with:
           name: GEM-Lint-report
