@@ -83,10 +83,6 @@ android {
 			signingConfig signingConfigs.release
 		}
 	}
-	compileOptions {
-		sourceCompatibility JavaVersion.VERSION_1_8
-		targetCompatibility JavaVersion.VERSION_1_8
-	}
 	packagingOptions {
 		resources {
 			excludes += ['**/*.properties', 'META-INF/*.md', 'META-INF/*.xml']
@@ -94,8 +90,9 @@ android {
 		}
 	}
 
-	// TODO remove this disable
 	namespace 'app.familygem'
+
+	// TODO remove this disable
 	lint {
 		disable 'MissingConstraints', 'MissingTranslation'
 	}
