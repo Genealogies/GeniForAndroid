@@ -138,7 +138,7 @@ dependencies {
 	implementation 'com.github.AndroidDeveloperLB:FastScrollerAndRecyclerViewFixes:9'
 	implementation 'org.jsoup:jsoup:1.15.3'
 	implementation project(':geonames')
-	implementation 'com.squareup.picasso:picasso:2.71828'
+	implementation 'com.github.square:picasso:2.8'
 	implementation 'androidx.core:core-ktx:+'
 	//androidTestImplementation 'androidx.test:runner:1.4.0'
 }
