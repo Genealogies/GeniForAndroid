@@ -2,4 +2,8 @@
 .idea
 build
 /app/libs-source-data/
+/app/src/main/java/randomtests
+/app/src/main/java/randomtests/
+/app/src/main/java/randomtests/*
+chiavi.properties
 local.properties
