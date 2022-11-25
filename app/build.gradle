@@ -2,12 +2,42 @@ import org.gradle.internal.logging.text.StyledTextOutputFactory
 
 import static org.gradle.internal.logging.text.StyledTextOutput.Style
 
-apply plugin: 'com.android.application'
-apply plugin: 'org.jetbrains.kotlin.android'
+plugins {
+	id 'com.android.application'
+	id 'kotlin-android'
+}
 
 def chiave
 
 android {
+	compileSdkVersion 33
+	defaultConfig {
+		applicationId "app.familygem"
+		minSdkVersion 21
+		targetSdkVersion 33
+		versionCode getGitCommitCount()
+		versionName getTag()
+		vectorDrawables.useSupportLibrary = true
+		resConfigs 'cs', 'de', 'en', 'eo', 'es', 'fa', 'fr', 'hr', 'hu', 'in', 'it', 'iw', 'kn', 'mr', 'nb', 'nl', 'pl', 'pt', 'ru', 'sk', 'sr', 'tr', 'uk'
+		def utenteAruba = ""
+		def passwordAruba = ""
+		def utenteGeoNames = "demo"
+		if (chiave) {
+			utenteAruba = chiave['utenteAruba']
+			passwordAruba = chiave['passwordAruba']
+			utenteGeoNames = chiave['utenteGeoNames']
+		}
+		buildConfigField "String", "utenteAruba", "\""+utenteAruba+"\""
+		buildConfigField "String", "passwordAruba", "\""+passwordAruba+"\""
+		buildConfigField "String", "utenteGeoNames", "\""+utenteGeoNames+"\""
+		buildConfigField "String", 'GIT_REPOSITORY', "\"" + getGitOriginRemote() + "\""
+
+		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+		testInstrumentationRunnerArguments useTestStorageService: 'true'
+
+		multiDexEnabled true
+	}
+
 	signingConfigs {
 		def out = services.get(StyledTextOutputFactory).create("")
 		if (System.env.USER == "hannes") {
@@ -45,30 +75,6 @@ android {
 		}
 	}
 
-	compileSdkVersion 33
-	defaultConfig {
-		applicationId "app.familygem"
-		minSdkVersion 21
-		targetSdkVersion 33
-		versionCode getGitCommitCount()
-		versionName getTag()
-		vectorDrawables.useSupportLibrary = true
-		resConfigs 'cs', 'de', 'en', 'eo', 'es', 'fa', 'fr', 'hr', 'hu', 'in', 'it', 'iw', 'kn', 'mr', 'nb', 'nl', 'pl', 'pt', 'ru', 'sk', 'sr', 'tr', 'uk'
-		def utenteAruba = ""
-		def passwordAruba = ""
-		def utenteGeoNames = "demo"
-		if (chiave) {
-			utenteAruba = chiave['utenteAruba']
-			passwordAruba = chiave['passwordAruba']
-			utenteGeoNames = chiave['utenteGeoNames']
-		}
-		buildConfigField "String", "utenteAruba", "\""+utenteAruba+"\""
-		buildConfigField "String", "passwordAruba", "\""+passwordAruba+"\""
-		buildConfigField "String", "utenteGeoNames", "\""+utenteGeoNames+"\""
-		buildConfigField "String", 'GIT_REPOSITORY', "\"" + getGitOriginRemote() + "\""
-		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-		multiDexEnabled true
-	}
 	buildTypes {
 		debug {
 			pseudoLocalesEnabled true
@@ -135,7 +141,7 @@ dependencies {
 	implementation 'org.jsoup:jsoup:1.15.3'
 	implementation project(':geonames')
 	implementation 'com.github.square:picasso:2.8'
-	implementation 'androidx.core:core-ktx:+'
+	implementation 'androidx.core:core-ktx:1.9.0'
 	//androidTestImplementation 'androidx.test:runner:1.4.0'
 }
 
