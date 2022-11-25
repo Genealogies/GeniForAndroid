@@ -30,9 +30,6 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: ${{ matrix.java_version }}
-      - name: Build Gedcom
-        run:
-          cd gedcom5-java && mvn install
       - name: Build GedcomGraph
         run:
           cd GedcomGraph && mvn install
