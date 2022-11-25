@@ -1,7 +1,5 @@
 package app.familygem;
 
-// Test di esportazione di un albero (con file media sparsi nello storage) verso GEDCOM e backup ZIP
-
 import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
