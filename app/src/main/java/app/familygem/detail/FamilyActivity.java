@@ -17,8 +17,7 @@ import java.util.List;
 import app.familygem.DetailActivity;
 import app.familygem.IndividualEditorActivity;
 import app.familygem.Global;
-import app.familygem.IndividualPersonActivity;
-import app.familygem.IndividualFamilyFragment;
+import app.familygem.ProfileActivity;
 import app.familygem.Memory;
 import app.familygem.R;
 import app.familygem.U;
@@ -93,7 +92,7 @@ public class FamilyActivity extends DetailActivity {
 				U.askWhichParentsToShow(this, p, 2);
 			} // a child with one or more families in which he is a spouse
 			else if( relation == Relation.CHILD && !p.getSpouseFamilies(gc).isEmpty() ) {
-				U.askWhichSpouceToShow(this, p, null);
+				U.askWhichSpouseToShow(this, p, null);
 			} // an unmarried child who has multiple parental families
 			else if( parentFam.size() > 1 ) {
 				if( parentFam.size() == 2 ) { // Swap between the 2 parental families //Swappa tra le 2 famiglie genitoriali
@@ -111,10 +110,10 @@ public class FamilyActivity extends DetailActivity {
 					Memory.replaceFirst(otherFamily);
 					recreate();
 				} else
-					U.askWhichSpouceToShow(this, p, null);
+					U.askWhichSpouseToShow(this, p, null);
 			} else {
 				Memory.setFirst(p);
-				startActivity(new Intent(this, IndividualPersonActivity.class));
+				startActivity(new Intent(this, ProfileActivity.class));
 			}
 		});
 		if( aRepresentativeOfTheFamily == null )
@@ -215,9 +214,8 @@ public class FamilyActivity extends DetailActivity {
 			new AlertDialog.Builder(context).setSingleChoiceItems(pediTexts, actual, (dialog, i) -> {
 				parentFamilyRef.setRelationshipType(pediTypes[i]);
 				dialog.dismiss();
-				if( context instanceof IndividualPersonActivity)
-					((IndividualFamilyFragment)((IndividualPersonActivity)context).getSupportFragmentManager()
-							.findFragmentByTag("android:switcher:" + R.id.schede_persona + ":2")).refresh();
+				if( context instanceof ProfileActivity)
+					((ProfileActivity)context).refresh();
 				else if( context instanceof FamilyActivity)
 					((FamilyActivity)context).refresh();
 				U.save(true, person);

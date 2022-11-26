@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.FragmentManager;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import org.folg.gedcom.model.Address;
 import org.folg.gedcom.model.EventFact;
 import org.folg.gedcom.model.Family;
@@ -35,72 +33,60 @@ import app.familygem.detail.ExtensionActivity;
 import app.familygem.detail.NameActivity;
 import static app.familygem.Global.gc;
 
-public class IndividualEventsFragment extends Fragment {
+public class ProfileFactsFragment extends Fragment {
 
 	Person one;
-	private View changeView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View vistaEventi = inflater.inflate(R.layout.individuo_scheda, container, false);
+		View eventsView = inflater.inflate(R.layout.individuo_scheda, container, false);
 		if( gc != null ) {
-			LinearLayout layout = vistaEventi.findViewById(R.id.contenuto_scheda);
+			LinearLayout layout = eventsView.findViewById(R.id.contenuto_scheda);
 			one = gc.getPerson(Global.indi);
 			if( one != null ) {
-				for( Name nome : one.getNames()) {
-					String tit = getString(R.string.name);
-					if( nome.getType() != null && !nome.getType().isEmpty() ) {
-						tit += " (" + TypeView.getTranslatedType(nome.getType(), TypeView.Combo.NAME) + ")";
+				for( Name name : one.getNames()) {
+					String title = getString(R.string.name);
+					if( name.getType() != null && !name.getType().isEmpty() ) {
+						title += " (" + TypeView.getTranslatedType(name.getType(), TypeView.Combo.NAME) + ")";
 					}
-					placeEvent(layout, tit, U.firstAndLastName(nome, " "), nome);
+					placeEvent(layout, title, U.firstAndLastName(name, " "), name);
 				}
-				for (EventFact fatto : one.getEventsFacts() ) {
-					String txt = "";
-					if( fatto.getValue() != null ) {
-						if( fatto.getValue().equals("Y") && fatto.getTag()!=null &&
-								( fatto.getTag().equals("BIRT") || fatto.getTag().equals("CHR") || fatto.getTag().equals("DEAT") ) )
-							txt = getString(R.string.yes);
-						else txt = fatto.getValue();
-						txt += "\n";
-					}
-					//if( fatto.getType() != null ) txt += fatto.getType() + "\n"; // Included in event title
-					if( fatto.getDate() != null ) txt += new GedcomDateConverter(fatto.getDate()).writeDateLong() + "\n";
-					if( fatto.getPlace() != null ) txt += fatto.getPlace() + "\n";
-					Address indirizzo = fatto.getAddress();
-					if( indirizzo != null ) txt += DetailActivity.writeAddress(indirizzo, true) + "\n";
-					if( fatto.getCause() != null ) txt += fatto.getCause();
-					if( txt.endsWith("\n") ) txt = txt.substring(0, txt.length() - 1); // Rimuove l'ultimo acapo
-					placeEvent(layout, writeEventTitle(fatto), txt, fatto);
+				for( EventFact fact : one.getEventsFacts() ) {
+					placeEvent(layout, writeEventTitle(fact), writeEventText(fact), fact);
 				}
 				for( Extension est : U.findExtensions(one) ) {
-					placeEvent(layout, est.nome, est.testo, est.gedcomTag);
+					placeEvent(layout, est.name, est.text, est.gedcomTag);
 				}
 				U.placeNotes(layout, one, true);
 				U.placeSourceCitations(layout, one);
-				changeView = U.placeChangeDate(layout, one.getChange());
+				U.placeChangeDate(layout, one.getChange());
 			}
 		}
-		return vistaEventi;
+		return eventsView;
 	}
 
-	// Scopre se è un nome con name pieces o un suffisso nel value
-	boolean nomeComplesso( Name n ) {
+	/**
+	 * Find out if it's a name with name pieces or a suffix in the value
+	 * */
+	boolean complexName(Name n ) {
 		// Name pieces
-		boolean ricco = n.getGiven() != null || n.getSurname() != null
+		boolean hasAllFields /*TODO improve translation of ricco*/ = n.getGiven() != null || n.getSurname() != null
 				|| n.getPrefix() != null || n.getSurnamePrefix() != null || n.getSuffix() != null
 				|| n.getFone() != null || n.getRomn() != null;
-		// Qualcosa dopo il cognome
-		String nome = n.getValue();
-		boolean suffisso = false;
-		if( nome != null ) {
-			nome = nome.trim();
-			if( nome.lastIndexOf('/') < nome.length()-1 )
-				suffisso = true;
+		// Something after the surname
+		String name = n.getValue();
+		boolean hasSuffix = false;
+		if( name != null ) {
+			name = name.trim();
+			if( name.lastIndexOf('/') < name.length()-1 )
+				hasSuffix = true;
 		}
-		return ricco || suffisso;
+		return hasAllFields || hasSuffix;
 	}
 
-	// Compose the title of an event of the person
+	/**
+	 * Compose the title of an event of the person
+	 * */
 	public static String writeEventTitle(EventFact event) {
 		int str = 0;
 		switch( event.getTag() ) {
@@ -121,6 +107,25 @@ public class IndividualEventsFragment extends Fragment {
 		if( event.getType() != null )
 			txt += " (" + event.getType() + ")";
 		return txt;
+	}
+
+	public static String writeEventText(EventFact event) {
+		String txt = "";
+
+		if( event.getValue() != null ) {
+			if( event.getValue().equals("Y") && event.getTag()!=null &&
+					( event.getTag().equals("BIRT") || event.getTag().equals("CHR") || event.getTag().equals("DEAT") ) )
+				txt = Global.context.getString(R.string.yes);
+			else txt = event.getValue();
+			txt += "\n";
+		}
+		//if( event.getType() != null ) txt += event.getType() + "\n"; // Included in event title
+		if( event.getDate() != null ) txt += new GedcomDateConverter(event.getDate()).writeDateLong() + "\n";
+		if( event.getPlace() != null ) txt += event.getPlace() + "\n";
+		Address address = event.getAddress();
+		if( address != null ) txt += DetailActivity.writeAddress(address, true) + "\n";
+		if( event.getCause() != null ) txt += event.getCause();
+		return txt.trim();
 	}
 
 	private int chosenSex;
@@ -147,8 +152,8 @@ public class IndividualEventsFragment extends Fragment {
 		if( object instanceof Name ) {
 			U.placeMedia(otherLayout, object, false);
 			eventView.setOnClickListener(v -> {
-				// Se è un nome complesso propone la modalità esperto
-				if( !Global.settings.expert && nomeComplesso((Name)object) ) {
+				// If it is a complex name, it proposes entering expert mode
+				if( !Global.settings.expert && complexName((Name)object) ) {
 					new AlertDialog.Builder(getContext()).setMessage(R.string.complex_tree_advanced_tools)
 							.setPositiveButton(android.R.string.ok, (dialog, i) -> {
 								Global.settings.expert = true;
@@ -184,9 +189,9 @@ public class IndividualEventsFragment extends Fragment {
 				eventView.setOnClickListener(view -> new AlertDialog.Builder(view.getContext())
 						.setSingleChoiceItems(sexes.values().toArray(new String[0]), chosenSex, (dialog, item) -> {
 							((EventFact)object).setValue(new ArrayList<>(sexes.keySet()).get(item));
-							aggiornaRuoliConiugali(one);
+							updateMaritalRoles(one);
 							dialog.dismiss();
-							refresh(1);
+							refresh();
 							U.save(true, one);
 						}).show());
 			} else { // All other events
@@ -204,9 +209,11 @@ public class IndividualEventsFragment extends Fragment {
 		}
 	}
 
-	// In tutte le famiglie coniugali rimuove gli spouse ref di 'person' e ne aggiunge uno corrispondente al sesso
-	// Serve soprattutto in caso di esportazione del Gedcom per avere allineati gli HUSB e WIFE con il sesso
-	static void aggiornaRuoliConiugali(Person person) {
+	/**
+	 * In all marital families, remove the spouse refs of 'person' and add one corresponding to the gender
+	 * It is especially useful in case of Gedcom export to have the HUSB and WIFE aligned with the sex
+	 * */
+	static void updateMaritalRoles(Person person) {
 		SpouseRef spouseRef = new SpouseRef();
 		spouseRef.setRef(person.getId());
 		boolean removed = false;
@@ -241,12 +248,12 @@ public class IndividualEventsFragment extends Fragment {
 		}
 	}
 
-	// Menu contestuale
+	// Contextual menu
 	View pieceView;
 	Object pieceObject;
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo info) {
-		// menuInfo come al solito è null
+		// menuInfo as usual is null
 		pieceView = view;
 		pieceObject = view.getTag(R.id.tag_object);
 		if( pieceObject instanceof Name ) {
@@ -268,7 +275,7 @@ public class IndividualEventsFragment extends Fragment {
 			menu.add(0, 220, 0, R.string.copy);
 			menu.add(0, 221, 0, R.string.delete);
 		} else if( pieceObject instanceof Note ) {
-			if( ((TextView)view.findViewById(R.id.nota_testo)).getText().length() > 0 )
+			if( ((TextView)view.findViewById(R.id.note_text)).getText().length() > 0 )
 				menu.add(0, 225, 0, R.string.copy);
 			if( ((Note)pieceObject).getId() != null )
 				menu.add(0, 226, 0, R.string.unlink);
@@ -281,75 +288,75 @@ public class IndividualEventsFragment extends Fragment {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		List<Name> nomi = one.getNames();
-		List<EventFact> fatti = one.getEventsFacts();
-		int cosa = 0; // cosa aggiornare dopo la modifica
+		List<Name> names = one.getNames();
+		List<EventFact> facts = one.getEventsFacts();
+		int toUpdateId = 0; // what to update after the change
 		switch( item.getItemId() ) {
 			// Nome
-			case 200: // Copia nome
-			case 210: // Copia evento
-			case 220: // Copia estensione
+			case 200: // Copy name
+			case 210: // Copy event
+			case 220: // Copy extension
 				U.copyToClipboard(((TextView)pieceView.findViewById(R.id.evento_titolo)).getText(),
 						((TextView)pieceView.findViewById(R.id.evento_testo)).getText());
 				return true;
-			case 201: // Sposta su
-				nomi.add(nomi.indexOf(pieceObject) - 1, (Name)pieceObject);
-				nomi.remove(nomi.lastIndexOf(pieceObject));
-				cosa = 2;
+			case 201: //Move up
+				names.add(names.indexOf(pieceObject) - 1, (Name)pieceObject);
+				names.remove(names.lastIndexOf(pieceObject));
+				toUpdateId = 2;
 				break;
-			case 202: // Sposta giù
-				nomi.add(nomi.indexOf(pieceObject) + 2, (Name)pieceObject);
-				nomi.remove(nomi.indexOf(pieceObject));
-				cosa = 2;
+			case 202: // Move down
+				names.add(names.indexOf(pieceObject) + 2, (Name)pieceObject);
+				names.remove(names.indexOf(pieceObject));
+				toUpdateId = 2;
 				break;
-			case 203: // Elimina
-				if( U.preserva(pieceObject) ) return false;
+			case 203: // Delete
+				if( U.preserve(pieceObject) ) return false;
 				one.getNames().remove(pieceObject);
 				Memory.setInstanceAndAllSubsequentToNull(pieceObject);
 				pieceView.setVisibility(View.GONE);
-				cosa = 2;
+				toUpdateId = 2;
 				break;
-			// Evento generico
-			case 211: // Sposta su
-				fatti.add(fatti.indexOf(pieceObject) - 1, (EventFact)pieceObject);
-				fatti.remove(fatti.lastIndexOf(pieceObject));
-				cosa = 1;
+			// Generic Event
+			case 211: // Move up
+				facts.add(facts.indexOf(pieceObject) - 1, (EventFact)pieceObject);
+				facts.remove(facts.lastIndexOf(pieceObject));
+				toUpdateId = 1;
 				break;
-			case 212: // Sposta giu
-				fatti.add(fatti.indexOf(pieceObject) + 2, (EventFact)pieceObject);
-				fatti.remove(fatti.indexOf(pieceObject));
-				cosa = 1;
+			case 212: // Move down
+				facts.add(facts.indexOf(pieceObject) + 2, (EventFact)pieceObject);
+				facts.remove(facts.indexOf(pieceObject));
+				toUpdateId = 1;
 				break;
 			case 213:
-				// todo Conferma elimina
+				// todo Confirm delete
 				one.getEventsFacts().remove(pieceObject);
 				Memory.setInstanceAndAllSubsequentToNull(pieceObject);
 				pieceView.setVisibility(View.GONE);
 				break;
-			// Estensione
-			case 221: // Elimina
+			// Extension
+			case 221: // delete
 				U.deleteExtension((GedcomTag)pieceObject, one, pieceView);
 				break;
-			// Nota
-			case 225: // Copia
-				U.copyToClipboard(getText(R.string.note), ((TextView)pieceView.findViewById(R.id.nota_testo)).getText());
+			// Note
+			case 225: // Copy
+				U.copyToClipboard(getText(R.string.note), ((TextView)pieceView.findViewById(R.id.note_text)).getText());
 				return true;
-			case 226: // Scollega
+			case 226: // disconnect
 				U.disconnectNote((Note)pieceObject, one, pieceView);
 				break;
 			case 227:
-				Object[] capi = U.deleteNote((Note)pieceObject, pieceView);
-				U.save(true, capi);
-				refresh(0);
+				Object[] heads = U.deleteNote((Note)pieceObject, pieceView);
+				U.save(true, heads);
+				refresh();
 				return true;
-			// Citazione fonte
-			case 230: // Copia
+			// source Citation
+			case 230: // Copy
 				U.copyToClipboard(getText(R.string.source_citation),
 						((TextView)pieceView.findViewById(R.id.fonte_testo)).getText() + "\n"
 								+ ((TextView)pieceView.findViewById(R.id.citazione_testo)).getText());
 				return true;
-			case 231: // Elimina
-				// todo conferma : Vuoi eliminare questa citazione della fonte? La fonte continuerà ad esistere.
+			case 231: // delete
+				// todo confirm : Do you want to delete this source citation? The source will continue to exist.
 				one.getSourceCitations().remove(pieceObject);
 				Memory.setInstanceAndAllSubsequentToNull(pieceObject);
 				pieceView.setVisibility(View.GONE);
@@ -357,33 +364,15 @@ public class IndividualEventsFragment extends Fragment {
 			default:
 				return false;
 		}
+		refresh();
 		U.save(true, one);
-		refresh(cosa);
 		return true;
 	}
 
-	// Update person ID in the toolbar and change date
-	void refreshId() {
-		TextView idView = getActivity().findViewById(R.id.persona_id);
-		idView.setText("INDI " + one.getId());
-		refresh(1);
-	}
-
-	// Update content of Facts tab
-	void refresh(int what) {
-		if( what == 0 ) { // Only replace change date
-			LinearLayout layout = getActivity().findViewById(R.id.contenuto_scheda);
-			if( changeView != null )
-				layout.removeView(changeView);
-			changeView = U.placeChangeDate(layout, one.getChange());
-		} else { // Reload the fragment
-			FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-			fragmentManager.beginTransaction().detach(this).commit();
-			fragmentManager.beginTransaction().attach(this).commit();
-			if( what == 2 ) { // Also update person name in toolbar
-				CollapsingToolbarLayout toolbarLayout = requireActivity().findViewById(R.id.toolbar_layout);
-				toolbarLayout.setTitle(U.properName(one));
-			}
-		}
+	/**
+	 * Update content
+	 */
+	void refresh() {
+		((ProfileActivity)requireActivity()).refresh();
 	}
 }
