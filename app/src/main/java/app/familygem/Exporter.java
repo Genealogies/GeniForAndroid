@@ -49,7 +49,7 @@ public class Exporter {
 	}
 
 	// Scrive il solo GEDCOM nell'URI
-	public boolean esportaGedcom(Uri targetUri) {
+	public boolean exportGedcom(Uri targetUri) {
 		this.targetUri = targetUri;
 		aggiornaTestata(estraiNome(targetUri));
 		ottimizzaGedcom();
@@ -72,7 +72,7 @@ public class Exporter {
 	}
 
 	// Scrive il GEDCOM con i media in un file ZIP
-	public boolean esportaGedcomZippato(Uri targetUri) {
+	public boolean exportGedcomZip(Uri targetUri) {
 		this.targetUri = targetUri;
 		// Crea il file GEDCOM
 		String titolo = Global.settings.getTree(idAlbero).title;
@@ -98,7 +98,7 @@ public class Exporter {
 	}
 
 	// Crea un file zippato con l'albero, i settaggi e i media
-	public boolean esportaBackupZip(String radice, int grado, Uri targetUri) {
+	public boolean exportBackupZip(String radice, int grado, Uri targetUri) {
 		this.targetUri = targetUri;
 		// Media
 		Map<DocumentFile, Integer> files = raccogliMedia();

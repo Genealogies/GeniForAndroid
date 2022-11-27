@@ -497,12 +497,12 @@ public class TreesActivity extends AppCompatActivity {
 			Uri uri = data.getData();
 			boolean result = false;
 			if( requestCode == 636 ) { // Esporta il GEDCOM
-				result = exporter.esportaGedcom( uri );
+				result = exporter.exportGedcom( uri );
 			} else if( requestCode == 6219 ) { // Esporta il GEDCOM zippato coi media
-				result = exporter.esportaGedcomZippato( uri );
+				result = exporter.exportGedcomZip( uri );
 			} // Esporta il backup ZIP
 			else if( requestCode == 327 ) {
-				result = exporter.esportaBackupZip( null, -1, uri );
+				result = exporter.exportBackupZip( null, -1, uri );
 			}
 			if( result )
 				Toast.makeText( TreesActivity.this, exporter.messaggioSuccesso, Toast.LENGTH_SHORT ).show();
