@@ -47,23 +47,31 @@ jobs:
           ALIAS_PASS: ${{ secrets.ALIAS_PASS }}
       - name: Run tests
         run: ./gradlew test
-#      - name: Install Android SDK
-#        uses: malinskiy/action-android/install-sdk@release/0.1.4
-#      - name: Android Emulator test
-#        uses: malinskiy/action-android/emulator-run-cmd@release/0.1.4
-#        with:
-#          cmd: ./gradlew cAT
-#          api: ${{ matrix.api }}
-#          tag: ${{ matrix.tag }}
-#          abi: ${{ matrix.abi }}
-#          cmdOptions: -noaudio -no-boot-anim -no-window
-#      - uses: actions/upload-artifact@v3.1.1
-#        if: ${{ always() }}
-#        with:
-#          name: GEM-Espresso-${{ matrix.api }}-${{ matrix.abi }}-report
-#          path: ./**/build/reports/androidTests/connected
+      - name: Install Android SDK
+        uses: malinskiy/action-android/install-sdk@release/0.1.4
+      - name: Android Emulator test
+        uses: malinskiy/action-android/emulator-run-cmd@release/0.1.4
+        with:
+          cmd: ./gradlew cAT
+          api: ${{ matrix.api }}
+          tag: ${{ matrix.tag }}
+          abi: ${{ matrix.abi }}
+          cmdOptions: -noaudio -no-boot-anim -no-window
       - name: cleanup keystore
         run: ./signing/cleanup.sh
+      - uses: actions/upload-artifact@v3.1.1
+        if: ${{ always() }}
+        with:
+          name: GEM-Espresso-${{ matrix.api }}-${{ matrix.abi }}-report
+          path: ./**/build/reports/androidTests/connected
+      - name: Archive screenshots
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: GEM-Screenshots-${{ matrix.api }}-${{ matrix.abi }}
+          path: |
+            app/build/outputs/connected_android_test_additional_output/debugAndroidTest/connected
+            app/build/outputs/androidTest-results/connected
   Check:
     name: Check
     runs-on: ubuntu-latest
