@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<color name="primario">#960f3e</color>
-	<color name="primarioScuro">#720426</color>
+	<color name="primario">#3BCFAC</color>
+	<color name="primarioScuro">#1F8069</color>
 	<color name="primarioChiaro">#be4265</color>
 	<color name="evidenzia">#E99725</color>
 	<color name="evidenziaMedio">#FCC762</color>
