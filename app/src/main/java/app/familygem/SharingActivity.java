@@ -226,7 +226,7 @@ public class SharingActivity extends BaseActivity {
 		protected void onPostExecute(SharingActivity questo) {
 			if( questo.dataId != null && questo.dataId.startsWith("20") ) {
 				File fileTree = new File( questo.getCacheDir(), questo.dataId + ".zip" );
-				if( questo.esporter.esportaBackupZip(questo.tree.shareRoot, 9, Uri.fromFile(fileTree)) ) {
+				if( questo.esporter.exportBackupZip(questo.tree.shareRoot, 9, Uri.fromFile(fileTree)) ) {
 					new InvioFTP().execute( questo );
 					return;
 				} else
