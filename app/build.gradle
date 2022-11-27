@@ -147,6 +147,8 @@ dependencies {
 	androidTestUtil "androidx.test.services:test-services:1.4.2"
 	androidTestImplementation "androidx.test.espresso:espresso-core:3.5.0"
 	androidTestImplementation "androidx.test:rules:1.5.0" //    GrantPermissionRule
+
+	androidTestImplementation 'commons-io:commons-io:2.11.0'
 }
 
 static def getGitOriginRemote() {
