@@ -384,6 +384,7 @@ public class Diagram extends Fragment {
 	 * Card of a person
 	 * */
 	class GraphicPerson extends GraphicMetric {
+		final VariableWidthTextView vistaNome;
 		ImageView background;
 		GraphicPerson(Context context, PersonNode personNode) {
 			super(context, personNode);
@@ -402,7 +403,15 @@ public class Diagram extends Fragment {
 				background.setBackgroundResource(R.drawable.casella_sfondo_sposo);
 			}
 			F.unaFoto(Global.gc, person, view.findViewById(R.id.card_photo));
-			TextView vistaNome = view.findViewById(R.id.card_name);
+			vistaNome = view.findViewById(R.id.card_name);
+			vistaNome.setOnClickListener( v -> {
+				if( person.getId().equals(Global.indi) ) {
+					Memory.setFirst( person );
+					startActivity( new Intent(getContext(), IndividualPersonActivity.class) );
+				} else {
+					clickCard( person );
+				}
+			});
 			String nome = U.properName(person, true);
 			if( nome.isEmpty() && view.findViewById(R.id.card_photo).getVisibility()==View.VISIBLE )
 				vistaNome.setVisibility( View.GONE );
@@ -421,7 +430,9 @@ public class Diagram extends Fragment {
 			setOnClickListener( v -> {
 				if( person.getId().equals(Global.indi) ) {
 					Memory.setFirst( person );
-					startActivity( new Intent(getContext(), IndividualPersonActivity.class) );
+					Intent personIntent = new Intent(getContext(), IndividualPersonActivity.class);
+					personIntent.putExtra(IndividualPersonActivity.KEY_ID, person.getId());
+					startActivity(personIntent);
 				} else {
 					clickCard( person );
 				}

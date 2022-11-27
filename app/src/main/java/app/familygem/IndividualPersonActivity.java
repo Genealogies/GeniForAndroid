@@ -42,6 +42,7 @@ import static app.familygem.Global.gc;
 
 public class IndividualPersonActivity extends AppCompatActivity {
 
+	static String KEY_ID = "idUno";
 	Person one;
 	TabLayout tabLayout;
 	String[] mainEventTags = {"BIRT", "BAPM", "RESI", "OCCU", "DEAT", "BURI"};
@@ -52,9 +53,14 @@ public class IndividualPersonActivity extends AppCompatActivity {
 		super.onCreate(bundle);
 		U.ensureGlobalGedcomNotNull(gc);
 		one = (Person) Memory.getObject();
+
+		if (one == null && getIntent().getStringExtra(KEY_ID) != null) {
+			one = gc.getPerson(getIntent().getStringExtra(KEY_ID));
+			Memory.setFirst(one);
+		}
 		// Se l'app va in background e viene stoppata, 'Memoria' è resettata e quindi 'uno' sarà null
 		if( one == null && bundle != null ) {
-			one = gc.getPerson(bundle.getString("idUno")); // In bundle è salvato l'id dell'individuo
+			one = gc.getPerson(bundle.getString(KEY_ID)); // In bundle è salvato l'id dell'individuo
 			Memory.setFirst(one); // Altrimenti la memoria è senza una pila
 		}
 		if( one == null ) return; // Capita raramente che il bundle non faccia il suo lavoro
@@ -378,7 +384,7 @@ public class IndividualPersonActivity extends AppCompatActivity {
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		outState.putString("idUno", one.getId());
+		outState.putString(KEY_ID, one.getId());
 	}
 
 	@Override
