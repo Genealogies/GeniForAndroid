@@ -17,6 +17,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -151,13 +153,7 @@ public class NewTree extends BaseActivity {
 	void scaricaEsempio() {
 		rotella.setVisibility( View.VISIBLE );
 		DownloadManager gestoreScarico = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
-		// Evita download multipli
-		Cursor curso = gestoreScarico.query( new DownloadManager.Query().setFilterByStatus(DownloadManager.STATUS_RUNNING) );
-		if( curso.moveToFirst() ) {
-			curso.close();
-			findViewById(R.id.bottone_scarica_esempio).setEnabled(false);
-			return;
-		}
+
 		String url = "https://drive.google.com/uc?export=download&id=1FT-60avkxrHv6G62pxXs9S6Liv5WkkKf";
 		String percorsoZip = getExternalCacheDir() + "/the_Simpsons.zip";
 		File fileZip = new File(percorsoZip);
