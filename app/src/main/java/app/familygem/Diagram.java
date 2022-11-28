@@ -408,7 +408,7 @@ public class Diagram extends Fragment {
 			vistaNome.setOnClickListener( v -> {
 				if( person.getId().equals(Global.indi) ) {
 					Memory.setFirst( person );
-					startActivity( new Intent(getContext(), IndividualPersonActivity.class) );
+					startActivity( new Intent(getContext(), ProfileActivity.class) );
 				} else {
 					clickCard( person );
 				}
@@ -432,7 +432,7 @@ public class Diagram extends Fragment {
 				if( person.getId().equals(Global.indi) ) {
 					Memory.setFirst(person);
 					Intent personIntent =new Intent(getContext(), ProfileActivity.class);
-					personIntent.putExtra(IndividualPersonActivity.KEY_ID, person.getId());
+					personIntent.putExtra(ProfileActivity.KEY_ID, person.getId());
 					startActivity(personIntent);
 				} else {
 					clickCard(person);

@@ -53,6 +53,8 @@ import jp.wasabeef.picasso.transformations.BlurTransformation;
 
 public class ProfileActivity extends AppCompatActivity {
 
+	static String KEY_ID = "idUno";
+
 	Person thisPerson;
 	TabLayout tabLayout;
 	Fragment[] tabs = new Fragment[3];
