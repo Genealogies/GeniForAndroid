@@ -59,7 +59,7 @@
 			android:name=".TreesActivity"
 			android:launchMode="singleTask" />
 		<activity
-			android:name=".NewTree"
+			android:name=".NewTreeActivity"
 			android:label="@string/new_tree"
 			android:parentActivityName=".TreesActivity" />
 		<activity
@@ -78,7 +78,7 @@
 			android:label="@string/tree_info"
 			android:parentActivityName=".TreesActivity" />
 		<activity
-			android:name=".MediaFolders"
+			android:name=".MediaFoldersActivity"
 			android:label="@string/media_folders" />
 		<activity
 			android:name=".SharingActivity"
@@ -101,7 +101,7 @@
 			android:label="@string/diagram_settings"
 			android:parentActivityName=".Principal" />
 		<activity
-			android:name=".IndividualPersonActivity"
+			android:name=".ProfileActivity"
 			android:theme="@style/AppTheme.NoActionBar" />
 		<activity
 			android:name=".detail.FamilyActivity" />
