@@ -28,6 +28,7 @@ public class Global extends MultiDexApplication {
 	public static Media croppedMedia; // parcheggio temporaneo del media in fase di croppaggio
 	static Gedcom gc2; // per il confronto degli aggiornamenti
 	static int treeId2; // id dell'albero2 con gli aggiornamenti
+    public static String pathOfCameraDestination;
 
 	// Viene chiamato all'avvio dell'applicazione, e anche quando viene riavviata
 	@Override

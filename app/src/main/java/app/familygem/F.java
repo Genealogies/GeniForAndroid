@@ -62,7 +62,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-import app.familygem.detail.ImageActivity;
+
 import app.familygem.visitor.MediaList;
 
 public class F {
@@ -555,112 +555,136 @@ public class F {
 		}
 	}
 
-	// Methods for image acquisition:
+	public static int checkMultiplePermissions(final Context context, final String... permissions) {
+        int result = PackageManager.PERMISSION_GRANTED;
+        for (String permission: permissions) {
+            result |= ContextCompat.checkSelfPermission(context, permission);
+        }
 
-	/**
-	 * Offers a nice list of apps for capturing images
-	 * */
-	public static void displayImageCaptureDialog(Context contesto, Fragment frammento, int codice, MediaContainer contenitore) {
-		// Richiesta permesso accesso memoria device
-		int perm = ContextCompat.checkSelfPermission(contesto, Manifest.permission.READ_EXTERNAL_STORAGE);
-		if( perm == PackageManager.PERMISSION_DENIED ) {
-			if( frammento != null ) { // Galleria
-				frammento.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, codice);
-			} else
-				ActivityCompat.requestPermissions((AppCompatActivity)contesto,
-						new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, codice);
-			return;
-		}
-		// Colleziona gli intenti utili per acquisire immagini
-		List<ResolveInfo> listaRisolvi = new ArrayList<>();
-		final List<Intent> listaIntenti = new ArrayList<>();
-		// Camere
-		Intent intentCamera = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
-		for( ResolveInfo info : contesto.getPackageManager().queryIntentActivities(intentCamera,0) ) {
-			Intent finalIntent = new Intent( intentCamera );
-			finalIntent.setComponent( new ComponentName(info.activityInfo.packageName, info.activityInfo.name) );
-			listaIntenti.add(finalIntent);
-			listaRisolvi.add( info );
-		}
-		// Gallerie
-		Intent intentGalleria = new Intent( Intent.ACTION_GET_CONTENT );
-		intentGalleria.setType("image/*");
-		String[] mimeTypes = { "image/*", "audio/*", "video/*", "application/*", "text/*" };
-		if( Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT )
-			mimeTypes[0] = "*/*"; // Altrimenti KitKat non vede gli 'application/*' in Downloads
-		intentGalleria.putExtra( Intent.EXTRA_MIME_TYPES, mimeTypes );
-		for( ResolveInfo info : contesto.getPackageManager().queryIntentActivities(intentGalleria,0) ) {
-			Intent finalIntent = new Intent( intentGalleria );
-			finalIntent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
-			listaIntenti.add( finalIntent );
-			listaRisolvi.add( info );
-		}
-		// Media vuoto
-		if( Global.settings.expert && codice != 5173 ) { // tranne che per la scelta di file in Immagine
-			Intent intent = new Intent( contesto, ImageActivity.class );
-			ResolveInfo info = contesto.getPackageManager().resolveActivity( intent, 0 );
-			intent.setComponent(new ComponentName(info.activityInfo.packageName,info.activityInfo.name));
-			listaIntenti.add( intent );
-			listaRisolvi.add( info );
-		}
-		new AlertDialog.Builder( contesto ).setAdapter( faiAdattatore( contesto, listaRisolvi ),
-				(dialog, id) -> {
-					Intent intent = listaIntenti.get(id);
-					// Predispone un Uri in cui mettere la foto scattata dall'app fotocamera
-					if( intent.getAction() != null && intent.getAction().equals(MediaStore.ACTION_IMAGE_CAPTURE) ) {
-						File dir = contesto.getExternalFilesDir( String.valueOf(Global.settings.openTree) );
-						if( !dir.exists() )
-							dir.mkdir();
-						File fotoFile = nextAvailableFileName( dir.getAbsolutePath(), "image.jpg" );
-						Global.fotoCamera = fotoFile.getAbsolutePath(); // Lo salva per riprenderlo dopo che la foto è stata scattata
-						Uri fotoUri;
-						if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP )
-							fotoUri = FileProvider.getUriForFile( contesto, BuildConfig.APPLICATION_ID + ".provider", fotoFile );
-						else // KitKat
-							fotoUri = Uri.fromFile( fotoFile );
-						intent.putExtra( MediaStore.EXTRA_OUTPUT, fotoUri );
-					}
-					if( intent.getComponent().getPackageName().equals("app.familygem") ) {
-						// Crea un Media vuoto
-						Media med;
-						if( codice==4173 || codice==2173 ) { // Media semplice
-							med = new Media();
-							med.setFileTag( "FILE" );
-							contenitore.addMedia( med );
-							Memory.add( med );
-						} else { // Media condiviso
-							med = GalleryFragment.newMedia( contenitore );
-							Memory.setFirst( med );
-						}
-						med.setFile( "" );
-						contesto.startActivity( intent );
-						U.save( true, Memory.firstObject() );
-					} else if( frammento != null )
-						frammento.startActivityForResult( intent, codice ); // Così il risultato ritorna al frammento
-					else
-						((AppCompatActivity)contesto).startActivityForResult( intent, codice );
-				}).show();
-	}
-	// Strettamente legato a quello qui sopra
-	private static ArrayAdapter<ResolveInfo> faiAdattatore(final Context contesto, final List<ResolveInfo> listaRisolvi) {
-		return new ArrayAdapter<ResolveInfo>(contesto, R.layout.pezzo_app, R.id.intent_titolo, listaRisolvi) {
-			@Override
-			public View getView(int posizione, View vista, ViewGroup genitore) {
-				View view = super.getView(posizione, vista, genitore);
-				ResolveInfo info = listaRisolvi.get(posizione);
-				ImageView image = view.findViewById(R.id.intent_icona);
-				TextView textview = view.findViewById(R.id.intent_titolo);
-				if( info.activityInfo.packageName.equals("app.familygem") ) {
-					image.setImageResource(R.drawable.image);
-					textview.setText(R.string.empty_media);
-				} else {
-					image.setImageDrawable(info.loadIcon(contesto.getPackageManager()));
-					textview.setText(info.loadLabel(contesto.getPackageManager()).toString());
-				}
-				return view;
-			}
-		};
-	}
+        return result;
+    }
+
+    // Methods for image acquisition:
+
+    /**
+     * Offers a nice list of apps for capturing images
+     */
+    public static void displayImageCaptureDialog(Context context, Fragment fragment, int code, MediaContainer container) {
+        // Request permission to access device memory
+        final String[] requiredPermissions;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requiredPermissions = new String[] {
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.READ_MEDIA_AUDIO,
+            };
+        } else {
+            requiredPermissions = new String[] {
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+            };
+        }
+        final int perm = checkMultiplePermissions(context, requiredPermissions);
+        if (perm == PackageManager.PERMISSION_DENIED) {
+            if (fragment != null) { // MediaFragment
+                fragment.requestPermissions(requiredPermissions, code);
+            } else
+                ActivityCompat.requestPermissions((AppCompatActivity)context, requiredPermissions, code);
+            return;
+        }
+        // Collect intents useful to capture images
+        List<ResolveInfo> resolveInfos = new ArrayList<>();
+        final List<Intent> intents = new ArrayList<>();
+        // Cameras
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        for (ResolveInfo info : context.getPackageManager().queryIntentActivities(cameraIntent, 0)) {
+            Intent finalIntent = new Intent(cameraIntent);
+            finalIntent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
+            intents.add(finalIntent);
+            resolveInfos.add(info);
+        }
+        // Galleries
+        Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galleryIntent.setType("image/*");
+        String[] mimeTypes = {"image/*", "audio/*", "video/*", "application/*", "text/*"};
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT)
+            mimeTypes[0] = "*/*"; // Otherwise KitKat does not see the 'application / *' in Downloads
+        galleryIntent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+        for (ResolveInfo info : context.getPackageManager().queryIntentActivities(galleryIntent, 0)) {
+            Intent finalIntent = new Intent(galleryIntent);
+            finalIntent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
+            intents.add(finalIntent);
+            resolveInfos.add(info);
+        }
+        // Empty Media
+        // Doesn't appear when choosing a file in MediaActivity
+        if (Global.settings.expert && code != 5173) {
+            Intent intent = new Intent(context, MediaFoldersActivity.class);
+            ResolveInfo info = context.getPackageManager().resolveActivity(intent, 0);
+            intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
+            intents.add(intent);
+            resolveInfos.add(info);
+        }
+        new AlertDialog.Builder(context).setAdapter(createAdapter(context, resolveInfos),
+                (dialog, id) -> {
+                    Intent intent = intents.get(id);
+                    // Set up a URI in which to put the photo taken by the camera app
+                    if (intent.getAction() != null && intent.getAction().equals(MediaStore.ACTION_IMAGE_CAPTURE)) {
+                        File dir = context.getExternalFilesDir(String.valueOf(Global.settings.openTree));
+                        if (!dir.exists())
+                            dir.mkdir();
+                        File photoFile = nextAvailableFileName(dir.getAbsolutePath(), "image.jpg");
+                        Global.pathOfCameraDestination = photoFile.getAbsolutePath(); // Saves it to retake it after the photo is taken
+                        Uri photoUri;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                            photoUri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", photoFile);
+                        else // KitKat
+                            photoUri = Uri.fromFile(photoFile);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                    }
+                    if (intent.getComponent().getPackageName().equals("app.familygem")) { // TODO: extract to build property
+                        // Create an empty Media
+                        Media med;
+                        if (code == 4173 || code == 2173) { // Simple media
+                            med = new Media();
+                            med.setFileTag("FILE");
+                            container.addMedia(med);
+                            Memory.add(med);
+                        } else { // Shared media
+                            med = GalleryFragment.newMedia(container);
+                            Memory.setFirst(med);
+                        }
+                        med.setFile("");
+                        context.startActivity(intent);
+                        U.save(true, Memory.firstObject());
+                    } else if (fragment != null)
+                        fragment.startActivityForResult(intent, code); // Thus the result returns to the fragment
+                    else
+                        ((AppCompatActivity)context).startActivityForResult(intent, code);
+                }).show();
+    }
+
+    /**
+     * Closely related to the one above.
+     */
+    private static ArrayAdapter<ResolveInfo> createAdapter(final Context context, final List<ResolveInfo> resolveInfos) {
+        return new ArrayAdapter<ResolveInfo>(context, R.layout.piece_app, R.id.app_title, resolveInfos) {
+            @Override
+            public View getView(int position, View view1, ViewGroup parent) {
+                View view = super.getView(position, view1, parent);
+                ResolveInfo info = resolveInfos.get(position);
+                ImageView image = view.findViewById(R.id.app_icon);
+                TextView textview = view.findViewById(R.id.app_title);
+                if (info.activityInfo.packageName.equals("app.familygem")) {
+                    image.setImageResource(R.drawable.image);
+                    textview.setText(R.string.empty_media);
+                } else {
+                    image.setImageDrawable(info.loadIcon(context.getPackageManager()));
+                    textview.setText(info.loadLabel(context.getPackageManager()).toString());
+                }
+                return view;
+            }
+        };
+    }
 
 	/**
 	 * Save the scanned file and propose to crop it if it is an image
