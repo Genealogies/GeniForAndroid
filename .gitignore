@@ -3,3 +3,4 @@
 build
 /app/libs-source-data/
 local.properties
+signing/release.keystore

@@ -57,6 +57,11 @@ jobs:
           tag: ${{ matrix.tag }}
           abi: ${{ matrix.abi }}
           cmdOptions: -noaudio -no-boot-anim -no-window
+        env:
+          CRYPT_PASS: ${{ secrets.git  }}
+          KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
+          ALIAS_NAME: ${{ secrets.ALIAS_NAME }}
+          ALIAS_PASS: ${{ secrets.ALIAS_PASS }}
       - name: cleanup keystore
         run: ./signing/cleanup.sh
       - uses: actions/upload-artifact@v3.1.1
