@@ -35,19 +35,13 @@ jobs:
           cd GedcomGraph && mvn install
       - name: Install Android SDK
         uses: malinskiy/action-android/install-sdk@release/0.1.4
-      - name: Decrypt keystore
-        run: ./signing/decrypt.sh
-        env:
-          CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
       - name: Build project
-        run: ./gradlew assembleRelease
+        run: ./gradlew clean assembleRelease
         env:
           CRYPT_PASS: ${{ secrets.git  }}
           KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
           ALIAS_NAME: ${{ secrets.ALIAS_NAME }}
           ALIAS_PASS: ${{ secrets.ALIAS_PASS }}
-      - name: cleanup keystore
-        run: ./signing/cleanup.sh
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
