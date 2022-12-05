@@ -151,7 +151,7 @@ dependencies {
 	implementation 'com.google.android.flexbox:flexbox:3.0.0'
 	// please run first 'cd GedcomGraph && mvn install'
 	implementation 'graph.gedcom:gedcomgraph:3.2'
-	implementation 'joda-time:joda-time:2.12.1'
+	implementation 'joda-time:joda-time:2.12.2'
 	implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 	implementation 'com.otaliastudios:zoomlayout:1.9.0'
 	implementation 'com.github.AndroidDeveloperLB:FastScrollerAndRecyclerViewFixes:9'
