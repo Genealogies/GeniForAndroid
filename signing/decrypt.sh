@@ -14,6 +14,8 @@ else
    echo "\$CRYPT_PASS available"
 fi
 
+openssl version
+
 pushd signing
 
 # to encrypt
