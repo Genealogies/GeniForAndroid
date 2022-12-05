@@ -185,3 +185,37 @@ static def getTag() {
 	def process = "git describe --tags".execute()
 	return process.text.toString().trim()
 }
+
+task decryptPrivate {
+	def out = services.get(StyledTextOutputFactory).create("")
+	def sout = new StringBuilder(), serr = new StringBuilder()
+
+	def pass = "$System.env.CRYPT_PASS"
+	if (pass == "null") {
+		out.style(Style.Normal).text("In decrypt files the mandatory ")
+				.style(Style.Failure).println('CRYPT_PASS not set')
+				.style(Style.Normal).println("  If you want use Firebase features, please set it with ")
+				.style(Style.SuccessHeader).println("  export CRYPT_PASS=<superSecret>")
+		println ""
+	} else {
+		out.style(Style.Normal).text("decrypt files for ")
+				.style(Style.SuccessHeader).text(getTag() + "." + getGitCommitCount())
+				.style(Style.Info).println(' DECRYPTED')
+		println ""
+
+		def processDecrypt = "$projectDir/../signing/decrypt.sh".execute()
+		processDecrypt.waitForProcessOutput(sout, serr)
+
+		if (serr.toString() != "")
+			out.style(Style.Failure).text("Error ")
+					.style(Style.Normal).text("decrypt ")
+					.style(Style.Description).println(serr)
+		else {
+			out.style(Style.SuccessHeader).text("OK ")
+					.style(Style.Normal).text("decrypt ")
+					.style(Style.Description).println(sout)
+		}
+	}
+}
+
+clean.dependsOn decryptPrivate

@@ -31,17 +31,13 @@ jobs:
           java-version: 11
       - name: Debug keystore
         run: keytool -genkey -v -keystore app/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "C=US, O=Android, CN=Android Debug"
-      - name: Decrypt keystore
-        run: ./signing/decrypt.sh
-        env:
-          CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
       - name: Build GedcomGraph
         run:
           cd GedcomGraph && mvn install
       - name: Build
-        run: ./gradlew assemble
+        run: ./gradlew clean assemble
         env:
-          CRYPT_PASS: ${{ secrets.git  }}
+          CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
           KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
           ALIAS_NAME: ${{ secrets.ALIAS_NAME }}
           ALIAS_PASS: ${{ secrets.ALIAS_PASS }}
@@ -58,12 +54,10 @@ jobs:
           abi: ${{ matrix.abi }}
           cmdOptions: -noaudio -no-boot-anim -no-window
         env:
-          CRYPT_PASS: ${{ secrets.git  }}
+          CRYPT_PASS: ${{ secrets.CRYPT_PASS }}
           KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
           ALIAS_NAME: ${{ secrets.ALIAS_NAME }}
           ALIAS_PASS: ${{ secrets.ALIAS_PASS }}
-      - name: cleanup keystore
-        run: ./signing/cleanup.sh
       - uses: actions/upload-artifact@v3.1.1
         if: ${{ always() }}
         with:
