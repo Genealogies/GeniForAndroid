@@ -1,6 +1,8 @@
-.gradle
-.idea
-build
-/app/libs-source-data/
+.gradle/
+.idea/*
+!.idea/codeStyles/
+build/
+app/libs-source-data/
+chiavi.properties
 local.properties
 signing/release.keystore
