@@ -4,37 +4,33 @@ import android.content.Context
 import android.text.Layout
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
-import android.view.View.MeasureSpec
+import kotlin.math.ceil
 
 /**
  * TextView that adapts the width even to multiple lines
- * TextView che adatta la larghezza anche a molteplici linee
  */
-class VariableWidthTextView(context: Context?, attrs: AttributeSet?) : AppCompatTextView(
-    context!!, attrs
-) {
-    override fun onMeasure(widthSpec: Int, heightSpec: Int) {
-        var widthSpec = widthSpec
+class VariableWidthTextView(context: Context, attrs: AttributeSet?) : AppCompatTextView(context, attrs) {
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        var widthSpec = widthMeasureSpec
         val widthMode = MeasureSpec.getMode(widthSpec)
         if (widthMode == MeasureSpec.AT_MOST) {
-            val layout = layout
-            if (layout != null) {
-                val maxWidth = Math.ceil(getMaxLineWidth(layout).toDouble()).toInt() +
+            layout?.let {
+                val maxWidth = ceil(getMaxLineWidth(it).toDouble()).toInt() +
                         compoundPaddingLeft + compoundPaddingRight
                 widthSpec = MeasureSpec.makeMeasureSpec(maxWidth, MeasureSpec.AT_MOST)
             }
         }
-        super.onMeasure(widthSpec, heightSpec)
+        super.onMeasure(widthSpec, heightMeasureSpec)
     }
 
     private fun getMaxLineWidth(layout: Layout): Float {
-        var max_width = 0.0f
+        var maxWidth = 0.0f
         val lines = layout.lineCount
         for (i in 0 until lines) {
-            if (layout.getLineWidth(i) > max_width) {
-                max_width = layout.getLineWidth(i)
+            if (layout.getLineWidth(i) > maxWidth) {
+                maxWidth = layout.getLineWidth(i)
             }
         }
-        return max_width
+        return maxWidth
     }
 }
