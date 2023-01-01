@@ -113,7 +113,7 @@ public class FamilyActivity extends DetailActivity {
 				} else
 					U.askWhichSpouceToShow(this, p, null);
 			} else {
-				Memory.setFirst(p);
+				Memory.Companion.setFirst(p);
 				startActivity(new Intent(this, IndividualPersonActivity.class));
 			}
 		});

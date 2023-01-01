@@ -80,7 +80,7 @@ public class NotebookFragment extends Fragment implements NotebookAdapter.ItemCl
 		} else { // Apre il dettaglio della nota
 			Intent intent = new Intent(getContext(), NoteActivity.class);
 			if( note.getId() != null ) { // Nota condivisa
-				Memory.setFirst(note);
+				Memory.Companion.setFirst(note);
 			} else { // Nota semplice
 				new FindStack(gc, note);
 				intent.putExtra("daQuaderno", true);
@@ -134,7 +134,7 @@ public class NotebookFragment extends Fragment implements NotebookAdapter.ItemCl
 			((NoteContainer)container).addNoteRef(noteRef);
 		}
 		U.save(true, note);
-		Memory.setFirst(note);
+		Memory.Companion.setFirst(note);
 		context.startActivity(new Intent(context, NoteActivity.class));
 	}
 }

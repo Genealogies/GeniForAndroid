@@ -137,7 +137,7 @@ public class LibraryFragment extends Fragment {
 				getActivity().finish();
 			} else {
 				Source fonte = gc.getSource( vistaId.getText().toString() );
-				Memory.setFirst( fonte );
+				Memory.Companion.setFirst( fonte );
 				startActivity( new Intent( getContext(), SourceActivity.class ) );
 			}
 		}
@@ -247,7 +247,7 @@ public class LibraryFragment extends Fragment {
 			else ((SourceCitationContainer)contenitore).addSourceCitation( citaFonte );
 		}
 		U.save( true, fonte );
-		Memory.setFirst( fonte );
+		Memory.Companion.setFirst( fonte );
 		contesto.startActivity( new Intent( contesto, SourceActivity.class ) );
 	}
 

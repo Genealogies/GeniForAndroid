@@ -52,16 +52,16 @@ public class IndividualPersonActivity extends AppCompatActivity {
 	protected void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 		U.ensureGlobalGedcomNotNull(gc);
-		one = (Person) Memory.getObject();
+		one = (Person) Memory.Companion.getObject();
 
 		if (one == null && getIntent().getStringExtra(KEY_ID) != null) {
 			one = gc.getPerson(getIntent().getStringExtra(KEY_ID));
-			Memory.setFirst(one);
+			Memory.Companion.setFirst(one);
 		}
 		// Se l'app va in background e viene stoppata, 'Memoria' è resettata e quindi 'uno' sarà null
 		if( one == null && bundle != null ) {
 			one = gc.getPerson(bundle.getString(KEY_ID)); // In bundle è salvato l'id dell'individuo
-			Memory.setFirst(one); // Altrimenti la memoria è senza una pila
+			Memory.Companion.setFirst(one); // Altrimenti la memoria è senza una pila
 		}
 		if( one == null ) return; // Capita raramente che il bundle non faccia il suo lavoro
 		Global.indi = one.getId();
