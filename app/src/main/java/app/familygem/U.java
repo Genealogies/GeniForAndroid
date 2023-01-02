@@ -676,7 +676,7 @@ public class U {
 				((AppCompatActivity)context).registerForContextMenu(noteView);
 			noteView.setOnClickListener(v -> {
 				if( note.getId() != null )
-					Memory.setFirst(note);
+					Memory.Companion.setFirst(note);
 				else
 					Memory.add(note);
 				context.startActivity(new Intent(context, NoteActivity.class));
@@ -813,7 +813,7 @@ public class U {
 		}
 		vistaTesto.setText(txt);
 		vistaFonte.setOnClickListener(v -> {
-			Memory.setFirst(source);
+			Memory.Companion.setFirst(source);
 			layout.getContext().startActivity(new Intent(layout.getContext(), SourceActivity.class));
 		});
 	}
@@ -835,7 +835,7 @@ public class U {
 		else if( Gender.isFemale(p) )
 			vistaPersona.findViewById(R.id.collega_bordo).setBackgroundResource(R.drawable.casella_bordo_femmina);
 		vistaPersona.setOnClickListener(v -> {
-			Memory.setFirst(p);
+			Memory.Companion.setFirst(p);
 			Intent intent = new Intent(scatola.getContext(), IndividualPersonActivity.class);
 			intent.putExtra("scheda", scheda);
 			scatola.getContext().startActivity(intent);
@@ -867,7 +867,7 @@ public class U {
 		scatola.addView(vistaFamiglia);
 		((TextView)vistaFamiglia.findViewById(R.id.famiglia_testo)).setText(testoFamiglia(scatola.getContext(), Global.gc, fam, false));
 		vistaFamiglia.setOnClickListener(v -> {
-			Memory.setFirst(fam);
+			Memory.Companion.setFirst(fam);
 			scatola.getContext().startActivity(new Intent(scatola.getContext(), FamilyActivity.class));
 		});
 	}
@@ -881,7 +881,7 @@ public class U {
 		parami.height = dpToPx(80);
 		F.showImage(media, vistaMedia.findViewById(R.id.media_img), vistaMedia.findViewById(R.id.media_circolo));
 		vistaMedia.setOnClickListener(v -> {
-			Memory.setFirst(media);
+			Memory.Companion.setFirst(media);
 			scatola.getContext().startActivity(new Intent(scatola.getContext(), ImageActivity.class));
 		});
 	}
@@ -895,7 +895,7 @@ public class U {
 		testoNota.setText(autor.getName());
 		vista.findViewById(R.id.nota_fonti).setVisibility(View.GONE);
 		vista.setOnClickListener(v -> {
-			Memory.setFirst(autor);
+			Memory.Companion.setFirst(autor);
 			contesto.startActivity(new Intent(contesto, AuthorActivity.class));
 		});
 	}
@@ -1167,7 +1167,7 @@ public class U {
 				Memory.replaceFirst(family);
 				((Activity)contesto).recreate();
 			} else {
-				Memory.setFirst(family);
+				Memory.Companion.setFirst(family);
 				contesto.startActivity(new Intent(contesto, FamilyActivity.class));
 			}
 		}
@@ -1193,7 +1193,7 @@ public class U {
 			Memory.replaceFirst(famiglia);
 			((Activity)contesto).recreate(); // Non accumula activity nello stack
 		} else {
-			Memory.setFirst(famiglia);
+			Memory.Companion.setFirst(famiglia);
 			contesto.startActivity(new Intent(contesto, FamilyActivity.class));
 		}
 	}

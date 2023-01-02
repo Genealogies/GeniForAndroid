@@ -406,7 +406,7 @@ public class Diagram extends Fragment {
 			vistaNome = view.findViewById(R.id.card_name);
 			vistaNome.setOnClickListener( v -> {
 				if( person.getId().equals(Global.indi) ) {
-					Memory.setFirst( person );
+					Memory.Companion.setFirst( person );
 					startActivity( new Intent(getContext(), IndividualPersonActivity.class) );
 				} else {
 					clickCard( person );
@@ -429,7 +429,7 @@ public class Diagram extends Fragment {
 			registerForContextMenu(this);
 			setOnClickListener( v -> {
 				if( person.getId().equals(Global.indi) ) {
-					Memory.setFirst( person );
+					Memory.Companion.setFirst( person );
 					Intent personIntent = new Intent(getContext(), IndividualPersonActivity.class);
 					personIntent.putExtra(IndividualPersonActivity.KEY_ID, person.getId());
 					startActivity(personIntent);
@@ -477,7 +477,7 @@ public class Diagram extends Fragment {
 				bondLayout.addView(year, yearParams);
 			}
 			setOnClickListener( view -> {
-				Memory.setFirst( familyNode.spouseFamily );
+				Memory.Companion.setFirst( familyNode.spouseFamily );
 				startActivity( new Intent( context, FamilyActivity.class ) );
 			});
 		}
@@ -527,7 +527,7 @@ public class Diagram extends Fragment {
 			getLayoutInflater().inflate(R.layout.diagram_asterisk, this, true);
 			registerForContextMenu(this);
 			setOnClickListener( v -> {
-				Memory.setFirst(personNode.person);
+				Memory.Companion.setFirst(personNode.person);
 				startActivity(new Intent(getContext(), IndividualPersonActivity.class));
 			});
 		}
@@ -724,11 +724,11 @@ public class Diagram extends Fragment {
 			else // Due famiglie
 				completeSelect(pers, Global.familyNum == 0 ? 1 : 0);
 		} else if( id == 0 ) { // Apri scheda individuo
-			Memory.setFirst(pers);
+			Memory.Companion.setFirst(pers);
 			startActivity(new Intent(getContext(), IndividualPersonActivity.class));
 		} else if( id == 1 ) { // Famiglia come figlio
 			if( idPersona.equals(Global.indi) ) { // Se è fulcro apre direttamente la famiglia
-				Memory.setFirst(parentFam);
+				Memory.Companion.setFirst(parentFam);
 				startActivity(new Intent(getContext(), FamilyActivity.class));
 			} else
 				U.askWhichParentsToShow(getContext(), pers, 2);

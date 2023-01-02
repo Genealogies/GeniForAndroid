@@ -36,7 +36,7 @@ public class ListOfAuthorsFragment extends Fragment {
 			((TextView)vistaPezzo.findViewById(R.id.magazzino_nome)).setText(TreeInfoActivity.nomeAutore(autor));
 			vistaPezzo.findViewById(R.id.magazzino_archivi).setVisibility(View.GONE);
 			vistaPezzo.setOnClickListener(v -> {
-				Memory.setFirst(autor);
+				Memory.Companion.setFirst(autor);
 				startActivity(new Intent(getContext(), AuthorActivity.class));
 			});
 			registerForContextMenu(vistaPezzo);
@@ -71,7 +71,7 @@ public class ListOfAuthorsFragment extends Fragment {
 		U.updateChangeDate(subm);
 		gc.addSubmitter(subm);
 		if( contesto != null ) {
-			Memory.setFirst(subm);
+			Memory.Companion.setFirst(subm);
 			contesto.startActivity(new Intent(contesto, AuthorActivity.class));
 		}
 		return subm;

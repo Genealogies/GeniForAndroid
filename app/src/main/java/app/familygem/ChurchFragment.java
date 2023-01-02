@@ -49,7 +49,7 @@ public class ChurchFragment extends Fragment {
 				Family newFamily = newFamily(true);
 				U.save(true, newFamily);
 				// If he(user?) goes straight back to the church he refreshes the list with the empty family //Se torna subito indietro in Chiesa rinfresca la lista con la famiglia vuota
-				Memory.setFirst(newFamily);
+				Memory.Companion.setFirst(newFamily);
 				startActivity(new Intent(getContext(), FamilyActivity.class));
 			});
 		}
@@ -100,7 +100,7 @@ public class ChurchFragment extends Fragment {
 			childrenView.setText(children.toString());
 		registerForContextMenu(familyView);
 		familyView.setOnClickListener(v -> {
-			Memory.setFirst(wrapper.family);
+			Memory.Companion.setFirst(wrapper.family);
 			layout.getContext().startActivity(new Intent(layout.getContext(), FamilyActivity.class));
 		});
 		familyView.setTag(wrapper.id); // only for the context menu Delete here in the Church //solo per il menu contestuale Elimina qui in Chiesa

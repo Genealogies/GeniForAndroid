@@ -111,7 +111,7 @@ class MediaGalleryAdapter extends RecyclerView.Adapter<MediaGalleryAdapter.gesto
 			} else {
 				Intent intent = new Intent( v.getContext(), ImageActivity.class );
 				if( media.getId() != null ) { // tutti i Media record
-					Memory.setFirst( media );
+					Memory.Companion.setFirst( media );
 				} else if( (attiva instanceof IndividualPersonActivity && contenitore instanceof Person) // media di primo livello nell'Indi
 						|| attiva instanceof DetailActivity) { // normale apertura nei Dettagli
 					Memory.add( media );

@@ -238,7 +238,7 @@ public class RegistryOfficeFragment extends Fragment {
 			} else { // Normale collegamento alla scheda individuo
 				// todo Click sulla foto apre la scheda media..
 				// intent.putExtra( "scheda", 0 );
-				Memory.setFirst( parente );
+				Memory.Companion.setFirst( parente );
 				startActivity( new Intent(getContext(), IndividualPersonActivity.class) );
 			}
 		}

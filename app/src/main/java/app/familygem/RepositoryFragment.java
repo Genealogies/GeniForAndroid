@@ -65,7 +65,7 @@ public class RepositoryFragment extends Fragment {
 						getActivity().setResult(Activity.RESULT_OK, intent);
 						getActivity().finish();
 					} else {
-						Memory.setFirst(repo);
+						Memory.Companion.setFirst(repo);
 						startActivity(new Intent(getContext(), RepositoryActivity.class));
 					}
 				});
@@ -113,7 +113,7 @@ public class RepositoryFragment extends Fragment {
 			source.setRepositoryRef(repoRef);
 		}
 		U.save(true, repo);
-		Memory.setFirst(repo);
+		Memory.Companion.setFirst(repo);
 		context.startActivity(new Intent(context, RepositoryActivity.class));
 	}
 

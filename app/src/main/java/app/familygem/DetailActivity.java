@@ -89,7 +89,7 @@ public class DetailActivity extends AppCompatActivity {
 		actionBar = getSupportActionBar();
 		U.ensureGlobalGedcomNotNull(gc);
 
-		object = Memory.getObject();
+		object = Memory.Companion.getObject();
 		if( object == null ) {
 			onBackPressed(); // skip all other details without object
 		} else
@@ -993,7 +993,7 @@ public class DetailActivity extends AppCompatActivity {
 				U.askWhichParentsToShow(this, person, 1);
 				return true;
 			case 11: // Person card? - Scheda persona
-				Memory.setFirst(person);
+				Memory.Companion.setFirst(person);
 				startActivity(new Intent(this, IndividualPersonActivity.class));
 				return true;
 			case 12: // Family as? with? a son - Famiglia come figlio

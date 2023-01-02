@@ -651,7 +651,7 @@ public class F {
                             Memory.add(med);
                         } else { // Shared media
                             med = GalleryFragment.newMedia(container);
-                            Memory.setFirst(med);
+                            Memory.Companion.setFirst(med);
                         }
                         med.setFile("");
                         context.startActivity(intent);
