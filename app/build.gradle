@@ -147,7 +147,7 @@ dependencies {
 	implementation 'androidx.work:work-runtime:2.7.1'
 	implementation 'androidx.appcompat:appcompat:1.7.0-alpha02'
 	implementation 'com.android.installreferrer:installreferrer:2.2'
-	implementation 'com.google.android.material:material:1.7.0'
+	implementation 'com.google.android.material:material:1.8.0'
 	implementation 'com.google.android.flexbox:flexbox:3.0.0'
 	// please run first 'cd GedcomGraph && mvn install'
 	implementation 'graph.gedcom:gedcomgraph:3.2'
