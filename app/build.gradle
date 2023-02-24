@@ -155,7 +155,7 @@ dependencies {
 	implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 	implementation 'com.otaliastudios:zoomlayout:1.9.0'
 	implementation 'com.github.AndroidDeveloperLB:FastScrollerAndRecyclerViewFixes:9'
-	implementation 'org.jsoup:jsoup:1.15.3'
+	implementation 'org.jsoup:jsoup:1.15.4'
 	implementation project(':geonames')
 	implementation 'com.github.square:picasso:2.8'
 	implementation 'androidx.core:core-ktx:1.9.0'
