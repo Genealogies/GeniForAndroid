@@ -195,7 +195,6 @@ public class SharingActivity extends BaseActivity {
 				conn.setRequestMethod("POST");
 				OutputStream out = new BufferedOutputStream( conn.getOutputStream() );
 				BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-				// password "fresa8FRESA"
 				String dati = "password=" + URLEncoder.encode( BuildConfig.passwordAruba, "UTF-8") +
 						"&titoloAlbero=" + URLEncoder.encode( questo.tree.title, "UTF-8") +
 						"&nomeAutore=" + URLEncoder.encode( questo.nomeAutore, "UTF-8") +
