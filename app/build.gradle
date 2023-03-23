@@ -144,7 +144,7 @@ dependencies {
 	implementation 'commons-net:commons-net:3.9.0'
 	implementation 'androidx.lifecycle:lifecycle-process:2.5.1'
 	implementation 'org.familysearch.gedcom:gedcom:1.14.0'
-	implementation 'androidx.work:work-runtime:2.7.1'
+	implementation 'androidx.work:work-runtime:2.8.1'
 	implementation 'androidx.appcompat:appcompat:1.7.0-alpha02'
 	implementation 'com.android.installreferrer:installreferrer:2.2'
 	implementation 'com.google.android.material:material:1.8.0'
