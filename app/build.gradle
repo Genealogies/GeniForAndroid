@@ -158,7 +158,7 @@ dependencies {
 	implementation 'org.jsoup:jsoup:1.15.4'
 	implementation project(':geonames')
 	implementation 'com.github.square:picasso:2.8'
-	implementation 'androidx.core:core-ktx:1.9.0'
+	implementation 'androidx.core:core-ktx:1.13.0'
 
 	androidTestImplementation "androidx.test.ext:junit-ktx:1.1.5"
 	androidTestUtil "androidx.test.services:test-services:1.4.2"
