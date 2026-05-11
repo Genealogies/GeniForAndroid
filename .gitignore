@@ -6,3 +6,4 @@ app/libs-source-data/
 chiavi.properties
 local.properties
 signing/release.keystore
+.kotlin

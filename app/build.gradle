@@ -3,37 +3,37 @@ import org.gradle.internal.logging.text.StyledTextOutputFactory
 import static org.gradle.internal.logging.text.StyledTextOutput.Style
 
 plugins {
-	id 'com.android.application'
-	id 'kotlin-android'
+	id "com.android.application"
+	id "kotlin-android"
 }
 
 def chiave
 
 android {
-	compileSdkVersion 33
+	compileSdkVersion 36
 	defaultConfig {
 		applicationId "app.familygem"
-		minSdkVersion 21
-		targetSdkVersion 33
+		minSdkVersion 23
+		targetSdkVersion 36
 		versionCode getGitCommitCount()
 		versionName getTag()
 		vectorDrawables.useSupportLibrary = true
-		resConfigs 'cs', 'de', 'en', 'eo', 'es', 'fa', 'fr', 'hr', 'hu', 'in', 'it', 'iw', 'kn', 'mr', 'nb', 'nl', 'pl', 'pt', 'ru', 'sk', 'sr', 'tr', 'uk'
+		resConfigs "cs", "de", "en", "eo", "es", "fa", "fr", "hr", "hu", "in", "it", "iw", "kn", "mr", "nb", "nl", "pl", "pt", "ru", "sk", "sr", "tr", "uk"
 		def utenteAruba = ""
 		def passwordAruba = ""
 		def utenteGeoNames = "demo"
 		if (chiave) {
-			utenteAruba = chiave['utenteAruba']
-			passwordAruba = chiave['passwordAruba']
-			utenteGeoNames = chiave['utenteGeoNames']
+			utenteAruba = chiave["utenteAruba"]
+			passwordAruba = chiave["passwordAruba"]
+			utenteGeoNames = chiave["utenteGeoNames"]
 		}
 		buildConfigField "String", "utenteAruba", "\""+utenteAruba+"\""
 		buildConfigField "String", "passwordAruba", "\""+passwordAruba+"\""
 		buildConfigField "String", "utenteGeoNames", "\""+utenteGeoNames+"\""
-		buildConfigField "String", 'GIT_REPOSITORY', "\"" + getGitOriginRemote() + "\""
+		buildConfigField "String", "GIT_REPOSITORY", "\"" + getGitOriginRemote() + "\""
 
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-		testInstrumentationRunnerArguments useTestStorageService: 'true'
+		testInstrumentationRunnerArguments useTestStorageService: "true"
 
 		multiDexEnabled true
 	}
@@ -53,7 +53,7 @@ android {
 		} else if (System.getenv("TRAVIS")) {
 			release {
 				out.style(Style.Normal).text("I run on TRAVIS")
-				storeFile file('../signing/release.keystore')
+				storeFile file("../signing/release.keystore")
 				storePassword System.getenv("KEYSTORE_PASS")
 				keyAlias System.getenv("ALIAS_NAME")
 				keyPassword System.getenv("ALIAS_PASS")
@@ -61,14 +61,14 @@ android {
 		} else {
 			release {
 				out.style(Style.Normal).text("I run on Github actions")
-				storeFile file('../signing/release.keystore')
+				storeFile file("../signing/release.keystore")
 				storePassword System.getenv("KEYSTORE_PASS")
 				keyAlias System.getenv("ALIAS_NAME")
 				keyPassword System.getenv("ALIAS_PASS")
 			}
 		}
 		debugCI {
-			storeFile file('./debug.keystore')
+			storeFile file("./debug.keystore")
 			storePassword "android"
 			keyPassword "android"
 			keyAlias "androiddebugkey"
@@ -88,11 +88,11 @@ android {
 		release {
 			shrinkResources true
 			minifyEnabled true
-			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+			proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
 			if (System.getenv("CI_SERVER")) { // gitlab
 				println "I run on Gitlab and use RELEASE signing"
 				signingConfig signingConfigs.release
-			} else if (file('../signing/release.keystore').exists()) {
+			} else if (file("../signing/release.keystore").exists()) {
 				if (System.getenv("KEYSTORE_PASS") == null || System.getenv("ALIAS_NAME") == null || System.getenv("ALIAS_PASS") == null) {
 					println "I run somewhere else and I use DEBUG signing because variables are not set !"
 					signingConfig signingConfigs.debug
@@ -108,16 +108,29 @@ android {
 	}
 	packagingOptions {
 		resources {
-			excludes += ['**/*.properties', 'META-INF/*.md', 'META-INF/*.xml']
+			excludes += ['**/*.properties', 'META-INF/*.md', 'META-INF/*.xml', 'META-INF/versions/**']
 			pickFirsts += ['EventFact*.properties']
 		}
 	}
 
-	namespace 'app.familygem'
+	namespace "app.familygem"
+
+	buildFeatures {
+		buildConfig true
+	}
+
+	compileOptions {
+		sourceCompatibility JavaVersion.VERSION_17
+		targetCompatibility JavaVersion.VERSION_17
+	}
+
+	kotlinOptions {
+		jvmTarget = "17"
+	}
 
 	// TODO remove this disable
 	lint {
-		disable 'MissingConstraints', 'MissingTranslation'
+		disable "MissingConstraints", "MissingTranslation"
 	}
 
 	applicationVariants.all { variant ->
@@ -137,35 +150,35 @@ android {
 }
 
 dependencies {
-	implementation 'com.github.hannesa2:githubAppUpdate:2.0'
-	implementation 'androidx.multidex:multidex:2.0.1'
-	implementation 'commons-io:commons-io:2.11.0' // Versions from 2.9.0 to 2.11.0 give NoClassDefFoundError on old devices
-	implementation 'com.google.code.gson:gson:2.10.1'
-	implementation 'commons-net:commons-net:3.10.0'
-	implementation 'androidx.lifecycle:lifecycle-process:2.6.2'
-	implementation 'org.familysearch.gedcom:gedcom:1.14.0'
-	implementation 'androidx.work:work-runtime:2.7.1'
-	implementation 'androidx.appcompat:appcompat:1.7.0-alpha02'
-	implementation 'com.android.installreferrer:installreferrer:2.2'
-	implementation 'com.google.android.material:material:1.8.0'
-	implementation 'com.google.android.flexbox:flexbox:3.0.0'
-	// please run first 'cd GedcomGraph && mvn install'
-	implementation 'graph.gedcom:gedcomgraph:3.2'
-	implementation 'joda-time:joda-time:2.12.5'
-	implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
-	implementation 'com.otaliastudios:zoomlayout:1.9.0'
-	implementation 'com.github.AndroidDeveloperLB:FastScrollerAndRecyclerViewFixes:9'
-	implementation 'org.jsoup:jsoup:1.15.4'
-	implementation project(':geonames')
-	implementation 'com.github.square:picasso:2.8'
-	implementation 'androidx.core:core-ktx:1.9.0'
+	implementation "com.github.hannesa2:githubAppUpdate:2.4"
+	implementation "androidx.multidex:multidex:2.0.1"
+	implementation "commons-io:commons-io:2.11.0" // Versions from 2.9.0 to 2.11.0 give NoClassDefFoundError on old devices
+	implementation "com.google.code.gson:gson:2.10.1"
+	implementation "commons-net:commons-net:3.9.0"
+	implementation "androidx.lifecycle:lifecycle-process:2.5.1"
+	implementation "org.familysearch.gedcom:gedcom:1.14.0"
+	implementation "androidx.work:work-runtime:2.7.1"
+	implementation "androidx.appcompat:appcompat:1.7.0-alpha02"
+	implementation "com.android.installreferrer:installreferrer:2.2"
+	implementation "com.google.android.material:material:1.8.0"
+	implementation "com.google.android.flexbox:flexbox:3.0.0"
+	// please run first "cd GedcomGraph && mvn install"
+	implementation "graph.gedcom:gedcomgraph:3.2"
+	implementation "joda-time:joda-time:2.12.2"
+	implementation 'com.vanniktech:android-image-cropper:4.5.0'
+	implementation "com.otaliastudios:zoomlayout:1.9.0"
+	implementation "com.github.AndroidDeveloperLB:FastScrollerAndRecyclerViewFixes:9"
+	implementation "org.jsoup:jsoup:1.15.3"
+	implementation project(":geonames")
+	implementation "com.squareup.picasso:picasso:2.8"
+	implementation "androidx.core:core-ktx:1.9.0"
 
 	androidTestImplementation "androidx.test.ext:junit-ktx:1.1.5"
 	androidTestUtil "androidx.test.services:test-services:1.4.2"
 	androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
 	androidTestImplementation "androidx.test:rules:1.5.0" //    GrantPermissionRule
-	androidTestImplementation 'androidx.test.espresso:espresso-intents:3.5.1'
-	androidTestImplementation 'com.github.AppDevNext:Moka:1.6'
+	androidTestImplementation "androidx.test.espresso:espresso-intents:3.5.1"
+	androidTestImplementation "com.github.AppDevNext:Moka:1.6"
 }
 
 static def getGitOriginRemote() {
@@ -193,14 +206,14 @@ task decryptPrivate {
 	def pass = "$System.env.CRYPT_PASS"
 	if (pass == "null") {
 		out.style(Style.Normal).text("In decrypt files the mandatory ")
-				.style(Style.Failure).println('CRYPT_PASS not set')
+				.style(Style.Failure).println("CRYPT_PASS not set")
 				.style(Style.Normal).println("  If you want use Firebase features, please set it with ")
 				.style(Style.SuccessHeader).println("  export CRYPT_PASS=<superSecret>")
 		println ""
 	} else {
 		out.style(Style.Normal).text("decrypt files for ")
 				.style(Style.SuccessHeader).text(getTag() + "." + getGitCommitCount())
-				.style(Style.Info).println(' DECRYPTED')
+				.style(Style.Info).println(" DECRYPTED")
 		println ""
 
 		def processDecrypt = "$projectDir/../signing/decrypt.sh".execute()
