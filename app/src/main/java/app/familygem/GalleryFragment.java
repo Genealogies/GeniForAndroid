@@ -16,7 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import com.theartofdev.edmodo.cropper.CropImage;
+import com.canhub.cropper.CropImage;
 import org.folg.gedcom.model.Media;
 import org.folg.gedcom.model.MediaContainer;
 import org.folg.gedcom.model.MediaRef;
@@ -145,11 +145,11 @@ public class GalleryFragment extends Fragment {
 							// Non deve scattare onRestart() + recreate() perché poi il fragment di arrivo non è più lo stesso
 					return;
 				}
-			} else if( requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE ) {
+			} else if( requestCode == F.CROP_IMAGE_ACTIVITY_REQUEST_CODE ) {
 				F.endImageCropping(data);
 			}
 			U.save(true, Global.croppedMedia);
-		} else if( requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE ) // se clic su freccia indietro in Crop Image
+		} else if( requestCode == F.CROP_IMAGE_ACTIVITY_REQUEST_CODE ) // se clic su freccia indietro in Crop Image
 			Global.edited = true;
 	}
 

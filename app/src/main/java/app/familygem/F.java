@@ -44,8 +44,10 @@ import com.google.gson.JsonPrimitive;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+import com.canhub.cropper.CropImage;
+import com.canhub.cropper.CropImageActivity;
+import com.canhub.cropper.CropImageOptions;
+import com.canhub.cropper.CropImageView;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.folg.gedcom.model.Gedcom;
@@ -773,6 +775,9 @@ public class F {
 		Global.edited = true; // per rinfrescare le pagine precedenti
 	}
 
+	// Request code for CropImageActivity (same value as old library used)
+	static final int CROP_IMAGE_ACTIVITY_REQUEST_CODE = 203;
+
 	// Avvia il ritaglio di un'immagine con CropImage
 	// 'fileMedia' e 'uriMedia': uno dei due è valido, l'altro è null
 	static void cropImage(Context contesto, File fileMedia, Uri uriMedia, Fragment frammento ) {
@@ -794,18 +799,20 @@ public class F {
 				nome = DocumentFile.fromSingleUri( contesto, uriMedia ).getName();
 			fileDestinazione = nextAvailableFileName( dirMemoria.getAbsolutePath(), nome );
 		}
-		Intent intent = CropImage.activity( uriMedia )
-				.setOutputUri( Uri.fromFile(fileDestinazione) ) // cartella in memoria esterna
-				.setGuidelines( CropImageView.Guidelines.OFF )
-				.setBorderLineThickness( 1 )
-				.setBorderCornerThickness( 6 )
-				.setBorderCornerOffset( -3 )
-				.setCropMenuCropButtonTitle( contesto.getText(R.string.done) )
-				.getIntent( contesto );
+		CropImageOptions options = new CropImageOptions();
+		options.guidelines = CropImageView.Guidelines.OFF;
+		options.borderLineThickness = 1;
+		options.borderCornerThickness = 6;
+		options.borderCornerOffset = -3;
+		options.cropMenuCropButtonTitle = contesto.getText(R.string.done);
+		options.customOutputUri = Uri.fromFile(fileDestinazione);
+		Intent intent = new Intent(contesto, CropImageActivity.class);
+		intent.putExtra(CropImage.CROP_IMAGE_EXTRA_SOURCE, uriMedia);
+		intent.putExtra(CropImage.CROP_IMAGE_EXTRA_OPTIONS, options);
 		if( frammento != null )
-			frammento.startActivityForResult( intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE );
+			frammento.startActivityForResult( intent, CROP_IMAGE_ACTIVITY_REQUEST_CODE );
 		else
-			((AppCompatActivity)contesto).startActivityForResult( intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE );
+			((AppCompatActivity)contesto).startActivityForResult( intent, CROP_IMAGE_ACTIVITY_REQUEST_CODE );
 	}
 
 	/**
@@ -827,8 +834,8 @@ public class F {
 	 * Ends the cropping procedure of an image
 	 * */
 	static void endImageCropping(Intent data ) {
-		CropImage.ActivityResult risultato = CropImage.getActivityResult(data);
-		Uri uri = risultato.getUri(); // ad es. 'file:///storage/emulated/0/Android/data/app.familygem/files/5/anna.webp'
+		CropImage.ActivityResult risultato = data.getParcelableExtra(CropImage.CROP_IMAGE_EXTRA_RESULT);
+		Uri uri = risultato.getUriContent(); // uri ex. 'file:///storage/emulated/0/Android/data/app.familygem/files/5/anna.webp'
 		Picasso.get().invalidate( uri ); // cancella dalla cache l'eventuale immagine prima del ritaglio che ha lo stesso percorso
 		String percorso = uriPercorsoFile( uri );
 		Global.croppedMedia.setFile( percorso );

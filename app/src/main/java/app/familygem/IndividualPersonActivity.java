@@ -20,7 +20,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.theartofdev.edmodo.cropper.CropImage;
+import com.canhub.cropper.CropImage;
 import org.folg.gedcom.model.EventFact;
 import org.folg.gedcom.model.Family;
 import org.folg.gedcom.model.Media;
@@ -405,7 +405,7 @@ public class IndividualPersonActivity extends AppCompatActivity {
 					U.save(true, media, one);
 					return;
 				}
-			} else if( requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE ) {
+			} else if( requestCode == F.CROP_IMAGE_ACTIVITY_REQUEST_CODE ) {
 				// Ottiene l'immagine ritagliata da Android Image Cropper
 				F.endImageCropping(data);
 				U.save(true); // la data di cambio per i Media condivisi viene già salvata nel passaggio precedente
@@ -434,7 +434,7 @@ public class IndividualPersonActivity extends AppCompatActivity {
 				return;
 			}
 			U.save(true, one);
-		} else if( requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE ) // se clic su freccia indietro in Crop Image
+		} else if( requestCode == F.CROP_IMAGE_ACTIVITY_REQUEST_CODE ) // se clic su freccia indietro in Crop Image
 			Global.edited = true;
 	}
 

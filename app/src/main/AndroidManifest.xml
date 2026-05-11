@@ -137,7 +137,7 @@
 			android:parentActivityName=".detail.ImageActivity"
 			android:theme="@style/AppTheme.NoActionBar" />
 		<activity android:name=".IndividualEditorActivity" />
-		<activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" />
+		<activity android:name="com.canhub.cropper.CropImageActivity" />
 		<service
 			android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
 			android:enabled="false"

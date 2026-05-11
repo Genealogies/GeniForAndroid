@@ -29,7 +29,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.theartofdev.edmodo.cropper.CropImage;
+import com.canhub.cropper.CropImage;
 import org.folg.gedcom.model.Address;
 import org.folg.gedcom.model.ChildRef;
 import org.folg.gedcom.model.EventFact;
@@ -365,7 +365,7 @@ public class DetailActivity extends AppCompatActivity {
 					U.save(false, Memory.firstObject());
 					return;
 				}
-			} else if( requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE ) {
+			} else if( requestCode == F.CROP_IMAGE_ACTIVITY_REQUEST_CODE ) {
 				F.endImageCropping(data);
 			}
 			//  from the context menu 'Choose ...'
@@ -376,7 +376,7 @@ public class DetailActivity extends AppCompatActivity {
 			}
 			U.save(true, Memory.firstObject());
 				// 'true' indicates to reload both this Detail thanks to the following onRestart (), and Individual or Family //'true' indica di ricaricare sia questo Dettaglio grazie al seguente onRestart(), sia Individuo o Famiglia
-		} else if( requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE )
+		} else if( requestCode == F.CROP_IMAGE_ACTIVITY_REQUEST_CODE )
 			Global.edited = true;
 	}
 
