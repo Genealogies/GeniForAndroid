@@ -173,7 +173,7 @@ public class NewTree extends BaseActivity {
 				unregisterReceiver( this );
 			}
 		};
-		registerReceiver( alCompletamento, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE) );
+		ContextCompat.registerReceiver( this, alCompletamento, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), ContextCompat.RECEIVER_EXPORTED );
 		// ACTION_DOWNLOAD_COMPLETE intende il completamento di QUALSIASI download che è in corso, non solo questo.
 	}
 
