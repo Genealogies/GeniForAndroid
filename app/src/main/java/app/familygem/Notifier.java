@@ -13,6 +13,7 @@ import androidx.work.WorkManager;
 import org.folg.gedcom.model.EventFact;
 import org.folg.gedcom.model.Gedcom;
 import org.folg.gedcom.model.Person;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import app.familygem.constant.Format;
@@ -97,22 +98,38 @@ class Notifier {
 
 	// Count the number of years that will be turned on the next birthday
 	private int findAge(Date birth) {
-		int years = now.getYear() - birth.getYear();
-		if( birth.getMonth() < now.getMonth()
-				|| (birth.getMonth() == now.getMonth() && birth.getDate() < now.getDate())
-				|| (birth.getMonth() == now.getMonth() && birth.getDate() == now.getDate() && now.getHours() >= 12) )
+		Calendar nowCal = Calendar.getInstance();
+		nowCal.setTime(now);
+		Calendar birthCal = Calendar.getInstance();
+		birthCal.setTime(birth);
+
+		int years = nowCal.get(Calendar.YEAR) - birthCal.get(Calendar.YEAR);
+		int nowMonth = nowCal.get(Calendar.MONTH);
+		int birthMonth = birthCal.get(Calendar.MONTH);
+		int nowDay = nowCal.get(Calendar.DAY_OF_MONTH);
+		int birthDay = birthCal.get(Calendar.DAY_OF_MONTH);
+		if( birthMonth < nowMonth
+				|| (birthMonth == nowMonth && birthDay < nowDay)
+				|| (birthMonth == nowMonth && birthDay == nowDay && nowCal.get(Calendar.HOUR_OF_DAY) >= 12) )
 			years++;
 		return years <= 120 ? years : -1;
 	}
 
 	// From birth Date find next birthday as long timestamp
 	private long nextBirthday(Date birth) {
-		birth.setYear(now.getYear());
-		birth.setHours(12);
-		//birth.setMinutes(0);
-		if( now.after(birth) )
-			birth.setYear(now.getYear() + 1);
-		return birth.getTime();
+		Calendar nowCal = Calendar.getInstance();
+		nowCal.setTime(now);
+		Calendar birthdayCal = Calendar.getInstance();
+		birthdayCal.setTime(birth);
+		birthdayCal.set(Calendar.YEAR, nowCal.get(Calendar.YEAR));
+		birthdayCal.set(Calendar.HOUR_OF_DAY, 12);
+		birthdayCal.set(Calendar.MINUTE, 0);
+		birthdayCal.set(Calendar.SECOND, 0);
+		birthdayCal.set(Calendar.MILLISECOND, 0);
+		if( now.after(birthdayCal.getTime()) ) {
+			birthdayCal.add(Calendar.YEAR, 1);
+		}
+		return birthdayCal.getTimeInMillis();
 	}
 
 	// Generate an alarm from each birthday of the provided tree
@@ -131,7 +148,13 @@ class Notifier {
 				PendingIntent pendingIntent = PendingIntent.getBroadcast(context, eventId++, intent,
 						PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_CANCEL_CURRENT);
 				try {
-					alarmManager.setExact(AlarmManager.RTC, birthday.date, pendingIntent);
+					if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms() ) {
+						alarmManager.set(AlarmManager.RTC, birthday.date, pendingIntent);
+					} else {
+						alarmManager.setExact(AlarmManager.RTC, birthday.date, pendingIntent);
+					}
+				} catch( SecurityException e ) {
+					alarmManager.set(AlarmManager.RTC, birthday.date, pendingIntent);
 				} catch( Exception e ) {
 					break; // There is a limit of 500 alarms on some devices
 				}
@@ -144,7 +167,7 @@ class Notifier {
 		if( tree.birthdays == null ) return;
 		int eventId = tree.id * FACTOR;
 		AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-		for( Settings.Birthday b : tree.birthdays ) {
+		for( int i = 0; i < tree.birthdays.size(); i++ ) {
 			Intent intent = new Intent(context, NotifyReceiver.class);
 			PendingIntent pendingIntent = PendingIntent.getBroadcast(context, eventId++, intent,
 					// Flags also need to be identical to alarm creator
